@@ -9,3 +9,14 @@ Comentário:
 
 Após a leitura do trecho, compreendi as funções de um engenheiro de software, que além de realizar o trabalho de programação, devem prestar cuidados a mais, focando na eficiência do software e também na qualidade da realização da empresa,
 sendo destinado a eles tomarem decisões cruciais para que consigam finalizar positivamente o projeto.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+12/08
+
+Exemplos de trade-offs: 
+
+1° Estudo ou Lazer: Você escolhe entre estudar mais ou ter mais tempo livre para lazer.
+
+2° Trabalho ou Descanso: Você escolhe entre trabalhar mais horas ou descansar mais.
+
+3° Espaço ou Mobilidade: Você escolhe entre ter um carro maior e mais espaçoso ou um carro menor e mais fácil de estacionar.
