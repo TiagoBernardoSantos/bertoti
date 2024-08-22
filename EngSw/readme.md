@@ -11,12 +11,104 @@ Após a leitura do trecho, compreendi as funções de um engenheiro de software,
 sendo destinado a eles tomarem decisões cruciais para que consigam finalizar positivamente o projeto.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
-12/08
-
-Exemplos de trade-offs: 
+12/08 - Exemplos de trade-offs: 
 
 1° Estudo ou Lazer: Você escolhe entre estudar mais ou ter mais tempo livre para lazer.
 
 2° Trabalho ou Descanso: Você escolhe entre trabalhar mais horas ou descansar mais.
 
 3° Espaço ou Mobilidade: Você escolhe entre ter um carro maior e mais espaçoso ou um carro menor e mais fácil de estacionar.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+19/08 - Atividade Java
+
+Classe Empresa 
+
+```bash
+package engsw;
+
+import java.util.LinkedList;
+import java.util.List;
+
+
+public class Empresa {
+	private List<Funcionario> funcionarios = new LinkedList<Funcionario>();
+	
+	public void cadastrarFuncionario(Funcionario funcionario) {
+		funcionarios.add(funcionario);
+	}
+	
+	public List<Funcionario> buscarFuncionarioporCpf(String cpf){
+		List<Funcionario> funcionariosEncontrados = new LinkedList<Funcionario>();
+		
+		for(Funcionario funcionario:this.funcionarios) {
+			if(funcionario.getCpf().equals(cpf))
+              funcionariosEncontrados.add(funcionario);
+		}
+			
+		
+		return funcionariosEncontrados;
+	}
+	
+	
+	public List<Funcionario> getFuncionarios(){
+		return funcionarios;
+	}
+}
+```
+Classe Funcionario 
+
+```bash
+package engsw;
+
+public class Funcionario {
+   private String nome;
+   private String cpf;
+   
+   public Funcionario(String cpf, String nome) {
+   	
+   	this.cpf = cpf;
+   	this.nome = nome;
+   }
+
+   public String getCpf() {
+   	return cpf;
+   }
+   
+   public String GetNome() {
+   	return nome;
+   }
+}
+```
+Classe TesteEmpresa 
+
+```bash
+package engsw;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+public class TesteEmpresa {
+	
+@Test 
+void test() {
+	Empresa CeA = new Empresa();
+	
+	Funcionario Tecnica = new Funcionario("43943509855", "Bia");
+	Funcionario Desenvolvedor = new Funcionario("54583098549", "Tiago");
+	
+	CeA.cadastrarFuncionario(Tecnica);
+	CeA.cadastrarFuncionario(Desenvolvedor);
+	
+	assertEquals(CeA.getFuncionarios().size(), 2);
+	
+	List<Funcionario> Desenvolvedores = CeA.buscarFuncionarioporCpf("54583098549");
+	assertEquals(Desenvolvedores.get(0).getCpf(),Desenvolvedor.getCpf());
+		
+  }
+
+}
+```
+----------------------------------------------------------------------------------------------------------------------------------------------------------
