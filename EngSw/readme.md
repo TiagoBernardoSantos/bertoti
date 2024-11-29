@@ -114,5 +114,6 @@ void test() {
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 01/11 - 4) Atividade diagrama de classes uml 
-![Diagrama em branco (1)](https://github.com/user-attachments/assets/495d9c92-5768-4bd9-882c-8053d0951c0c)
+
+![Diagrama em branco (1)](https://github.com/user-attachments/assets/092fc77f-6339-43b4-9ad7-808464f714eb)
 
