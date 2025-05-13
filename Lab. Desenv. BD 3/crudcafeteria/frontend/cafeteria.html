@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cardápio da Cafeteria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f1de;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #a0522d;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            margin: 8px 0;
+            padding: 10px;
+            border: 1px solid #d3d3d3;
+            border-radius: 5px;
+            width: 300px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        label input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            background-color: #a0522d;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #774124;
+            transform: scale(1.05);
+        }
+
+        #lista {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #lista li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #lista li strong {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        #lista li em {
+            font-style: italic;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        #lista li button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            align-self: flex-start;
+            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+        }
+
+        #lista li button:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .item-animado {
+            animation: piscar 0.5s ease-in-out;
+        }
+
+        @keyframes piscar {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Cardápio da Cafeteria</h1>
+    <input type="text" id="nome" placeholder="Nome do produto">
+    <input type="number" step="0.01" id="preco" placeholder="Preço (R$)">
+    <textarea id="descricao" placeholder="Descrição..."></textarea>
+    <label>
+        <input type="checkbox" id="disponivel" checked>
+        Disponível
+    </label>
+    <br>
+    <button onclick="criarProduto()"><i class="fas fa-plus"></i> Adicionar Produto</button>
+
+    <h2>Produtos no Cardápio</h2>
+    <ul id="lista"></ul>
+
+    <script>
+        const api = "http://localhost:8080/produtos";
+        let editando = false;
+        let idEditando = null;
+
+        function listar() {
+            fetch(api)
+                .then(res => res.json())
+                .then(produtos => {
+                    const lista = document.getElementById("lista");
+                    lista.innerHTML = "";
+                    produtos.forEach(p => {
+                        lista.innerHTML += `<li>
+                            <strong>${p.nome}</strong> - R$ ${p.preco.toFixed(2)}<br>
+                            ${p.descricao || ""}<br>
+                            <em>${p.disponivel ? "Disponível" : "Indisponível"}</em><br>
+                            <button onclick="editarProduto(${p.id}, '${p.nome}', ${p.preco}, \`${p.descricao || ""}\`, ${p.disponivel})">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button onclick="deletarProduto(${p.id})"><i class="fas fa-trash"></i> Remover</button>
+                        </li>`;
+                    });
+                });
+        }
+
+        function criarProduto() {
+            const nome = document.getElementById("nome").value;
+            const preco = parseFloat(document.getElementById("preco").value);
+            const descricao = document.getElementById("descricao").value;
+            const disponivel = document.getElementById("disponivel").checked;
+
+            const produto = { nome, preco, descricao, disponivel };
+
+            const metodo = editando ? "PUT" : "POST";
+            const url = editando ? `${api}/${idEditando}` : api;
+
+            fetch(url, {
+                method: metodo,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(produto)
+            })
+            .then(() => {
+                listar();
+                limparCampos();
+                editando = false;
+                idEditando = null;
+                document.querySelector("button[onclick='criarProduto()']").innerHTML = '<i class="fas fa-plus"></i> Adicionar Produto';
+            });
+        }
+
+        function editarProduto(id, nome, preco, descricao, disponivel) {
+            document.getElementById("nome").value = nome;
+            document.getElementById("preco").value = preco;
+            document.getElementById("descricao").value = descricao;
+            document.getElementById("disponivel").checked = disponivel;
+
+            editando = true;
+            idEditando = id;
+
+            const botao = document.querySelector("button[onclick='criarProduto()']");
+            botao.innerHTML = '<i class="fas fa-save"></i> Salvar Alterações';
+        }
+
+        function deletarProduto(id) {
+            if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+
+            fetch(`${api}/${id}`, { method: "DELETE" })
+                .then(() => {
+                    const itemRemovido = document.querySelector(`#lista li button[onclick="deletarProduto(${id})"]`).parentNode;
+                    if (itemRemovido) {
+                        itemRemovido.classList.add('item-animado');
+                        setTimeout(() => listar(), 500);
+                    } else {
+                        listar();
+                    }
+                });
+        }
+
+        function limparCampos() {
+            document.getElementById("nome").value = "";
+            document.getElementById("preco").value = "";
+            document.getElementById("descricao").value = "";
+            document.getElementById("disponivel").checked = true;
+        }
+
+        listar();
+    </script>
+</body>
+</html>
